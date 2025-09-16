@@ -1,0 +1,44 @@
+Feature: Criar usuário # automation/UsersCRUDTests/features/create_user.feature:1
+  Como QA tester
+  Quero criar usuários via POST /users
+  Para validar que o endpoint funciona corretamente
+  Scenario: Criar usuário válido                              # automation/UsersCRUDTests/features/create_user.feature:6
+    Given que a API está disponível                           # automation/UsersCRUDTests/features/steps/users_steps.py:10
+    When eu envio uma requisição POST para "/users" com body: # automation/UsersCRUDTests/features/steps/users_steps.py:21
+      """
+      {
+        "name": "Larissa Bezerra da Cruz",
+        "email": "larissasbezerra@outlook.com",
+        "age": 30,
+        "status": "active"
+      }
+      """
+    Then a resposta deve ter status 201                       # automation/UsersCRUDTests/features/steps/users_steps.py:34
+      ASSERT FAILED: Esperado 201, obtido 409
+
+    And os dados do usuário retornado devem estar corretos    # None
+
+  Scenario: Criar usuário com email duplicado                 # automation/UsersCRUDTests/features/create_user.feature:20
+    Given que a API está disponível                           # automation/UsersCRUDTests/features/steps/users_steps.py:10
+    When eu envio uma requisição POST para "/users" com body: # automation/UsersCRUDTests/features/steps/users_steps.py:21
+      """
+      {
+        "name": "Helena Cruz",
+        "email": "larissasbezerra@outlook.com",
+        "age": 9,
+        "status": "inactive"
+      }
+      """
+    Then a resposta deve ter status 400                       # None
+    And a mensagem de erro deve indicar email duplicado       # None
+
+Feature: Listar usuários # automation/UsersCRUDTests/features/list_users.feature:1
+  Como QA tester
+  Quero buscar todos os usuários
+  Para validar que o endpoint GET /users funciona corretamente
+  Scenario: Buscar lista de usuários                    # automation/UsersCRUDTests/features/list_users.feature:6
+    Given que a API está disponível                     # automation/UsersCRUDTests/features/steps/users_steps.py:10
+    When eu faço uma requisição GET para "/users"       # automation/UsersCRUDTests/features/steps/users_steps.py:17
+    Then a resposta deve ter status 200                 # automation/UsersCRUDTests/features/steps/users_steps.py:30
+    And a lista de usuários deve estar presente no JSON # automation/UsersCRUDTests/features/steps/users_steps.py:38
+
